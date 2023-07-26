@@ -4,6 +4,7 @@ import { initializeFirestore, persistentLocalCache } from 'firebase/firestore'
 import { collection, CollectionReference, Firestore } from 'firebase/firestore'
 import { getPerformance } from 'firebase/performance'
 import { getAnalytics } from 'firebase/analytics'
+import { Curriculum, Module, User } from '@/types'
 
 const env = import.meta.env
 
@@ -17,8 +18,6 @@ const firebaseConfig = {
   measurementId: env.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
-console.log(firebaseConfig)
-
 export const app = initializeApp(firebaseConfig)
 
 export const auth = getAuth(app)
@@ -31,13 +30,9 @@ export const analytics = getAnalytics(app)
 
 const typedCollection = <T>(db: Firestore, col: string) => collection(db, col) as CollectionReference<T>
 
-export type User = {
-  id: string
-  name: string
-  email: string
-}
-
 export const userCollection = typedCollection<User>(db, 'users')
+export const CurriculumCollection = typedCollection<Curriculum>(db, 'curriculums')
+export const ModuleCollection = typedCollection<Module>(db, 'modules')
 
 export const withoutFields = <
   T extends Record<string, unknown>,
