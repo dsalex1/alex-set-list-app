@@ -2,7 +2,7 @@
 import { useAuth } from '@/stores/auth'
 import { RouterLink } from 'vue-router'
 
-const APP_NAME = import.meta.env.VITE_APP_NAME
+const APP_SHORT_NAME = import.meta.env.VITE_APP_SHORT_NAME
 
 const auth = useAuth()
 </script>
@@ -11,7 +11,7 @@ const auth = useAuth()
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
         <img src="@/assets/logo-128.png" alt="" width="32" height="32" class="d-inline-block align-text-top" />
-        {{ APP_NAME }}
+        {{ APP_SHORT_NAME }}
       </a>
       <ul class="navbar-nav me-auto">
         <li class="nav-item">

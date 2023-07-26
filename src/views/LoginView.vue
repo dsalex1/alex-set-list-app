@@ -39,7 +39,7 @@ const login = async () => {
 <template>
   <!-- spinner while use rin undefined-->
   <div class="container d-flex flex-column align-items-center" style="max-width: 400px">
-    <img class="my-4" src="@/assets/logo-128.png" alt="logo" />
+    <img class="my-4 border border-dark bg-white" src="@/assets/logo-128.png" alt="logo" />
     <div v-if="authStore.user === undefined" class="d-flex justify-content-center mt-5">
       <LoadingSpinner />
     </div>
