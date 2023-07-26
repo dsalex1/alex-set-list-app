@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { VitePWA } from 'vite-plugin-pwa'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { transformAssetUrls } from 'vite-plugin-vuetify'
 
 const path = require('path')
 
@@ -11,7 +12,9 @@ export default ({ mode }) => {
   process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
   return defineConfig({
     plugins: [
-      vue(),
+      vue({
+        template: { transformAssetUrls },
+      }),
       VitePWA({
         registerType: 'autoUpdate',
         workbox: {

@@ -16,53 +16,54 @@ const user = reactive({
 })
 
 async function forgetPassword() {
-  await sendPasswordResetEmail(auth, user.email)
-  success.value = 'Password reset email sent.'
-  error.value = ''
+  try {
+    await sendPasswordResetEmail(auth, user.email)
+    success.value = 'Password reset email sent.'
+    error.value = ''
+  } catch (e) {
+    error.value = 'No user found with this email.'
+  }
 }
-const login = async () => {
+const login = async (event) => {
+  if (!(await event).valid) return
   loading.value = true
   error.value = ''
+  success.value = ''
   try {
-    if (!user.email) return (error.value = 'Please enter your email address.')
-    if (!user.password) return (error.value = 'Please enter your password.')
-
     await authStore.login(user.email, user.password)
   } catch (e) {
     error.value = 'Wrong credentials.'
-  } finally {
-    loading.value = false
   }
+  loading.value = false
 }
 </script>
 
 <template>
-  <!-- spinner while use rin undefined-->
-  <div class="container d-flex flex-column align-items-center" style="max-width: 400px">
-    <img class="my-4 border border-grey bg-white rounded" src="@/assets/logo-128.png" alt="logo" />
-    <div v-if="authStore.user === undefined" class="d-flex justify-content-center mt-5">
-      <LoadingSpinner />
-    </div>
-    <div v-else class="card card-body flex-grow-0 w-100">
-      <h2>Login</h2>
-      <div class="alert alert-success mt-2" v-if="success">{{ success }}</div>
-      <form @submit.prevent="login">
-        <div class="mb-3">
-          <label class="form-label">Email</label>
-          <input v-model="user.email" type="email" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Password</label>
-          <input v-model="user.password" type="password" class="form-control" />
-        </div>
-        <div class="form-group">
-          <p class="text-danger" v-if="error">{{ error }}</p>
-        </div>
-
-        <LoadingSpinner v-if="loading" />
-        <button v-else type="submit" class="btn btn-primary">Login</button>
-        <button role="button" class="btn btn-link" @click="forgetPassword" v-if="error">Forgot password?</button>
-      </form>
-    </div>
+  <div v-if="authStore.user === undefined" class="d-flex justify-center align-center" style="height: 100vh">
+    <LoadingSpinner />
   </div>
+  <v-container v-else class="d-flex flex-column align-center">
+    <v-img class="my-12 border rounded" width="128" height="128" src="@/assets/logo-128.png"></v-img>
+    <v-sheet width="400" class="mx-auto">
+      <h1 class="text-h4 mb-2">Login</h1>
+      <v-alert color="success mb-2" v-if="success" :text="success"></v-alert>
+      <v-form validate-on="submit" @submit.prevent="login">
+        <v-text-field
+          :rules="[(v) => !!v || 'Please enter your password.']"
+          v-model="user.email"
+          label="Email"
+        ></v-text-field>
+
+        <v-text-field
+          :rules="[(v) => !!v || 'Please enter your email address.']"
+          v-model="user.password"
+          type="password"
+          label="Password"
+        ></v-text-field>
+        <p class="text-error" v-if="error">{{ error }}</p>
+        <v-btn :loading="loading" type="submit" color="primary" class="me-2 mt-4">Login</v-btn>
+        <v-btn variant="text" color="primary" class="mt-4" @click="forgetPassword" v-if="error">Forgot Password?</v-btn>
+      </v-form>
+    </v-sheet>
+  </v-container>
 </template>

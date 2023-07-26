@@ -7,9 +7,41 @@ import { app as firebaseApp } from './plugins/firebase'
 // Import our custom CSS
 import './main.scss'
 
-// Import all of Bootstrap's JS
-import * as bootstrap from 'bootstrap'
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+import { aliases, fa } from 'vuetify/iconsets/fa'
+import '@fortawesome/fontawesome-free/css/all.css'
 
+const vuetify = createVuetify({
+  components,
+  directives,
+  theme: {
+    defaultTheme: 'customLightTheme',
+    themes: {
+      customLightTheme: {
+        dark: false,
+        colors: {
+          background: '#f7f7f7',
+          surface: '#FFFFFF',
+          primary: '#011e4a',
+          secondary: '#46525e',
+        },
+      },
+    },
+  },
+  icons: {
+    defaultSet: 'fa',
+    aliases,
+    sets: {
+      fa,
+    },
+  },
+})
+
+//dayjs
 import dayjs from 'dayjs'
 //import 'dayjs/locale/de' // import locale
 //dayjs.locale('de') // use locale
@@ -28,5 +60,7 @@ app.use(VueFire, {
   firebaseApp,
   modules: [VueFireAuth()],
 })
+
+app.use(vuetify)
 
 app.mount('#app')

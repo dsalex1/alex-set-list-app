@@ -1,18 +1,38 @@
 <script setup lang="ts">
+import Backbutton from '@/components/Backbutton.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import AppLayoutVue from '@/layouts/AppLayout.vue'
 import { auth, userCollection, withoutFields } from '@/plugins/firebase'
 import { User } from '@/types'
 import { createUserWithEmailAndPassword } from '@firebase/auth'
-import { addDoc } from 'firebase/firestore'
-import { ref } from 'vue'
+import { addDoc, doc, updateDoc } from 'firebase/firestore'
+import { computed, ref, watch } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
+import { useDocument } from 'vuefire'
 
 const route = useRoute()
 const router = useRouter()
 
-const user = ref<User & { password: string }>({
+const userId = route.params.id as string
+
+const formMode = userId ? 'edit' : 'create'
+
+const userDocRef = userId ? doc(userCollection, userId) : null
+const userData = userId ? useDocument(userDocRef) : null
+if (userData)
+  watch(userData, (data) => {
+    if (!data) return
+    user.value = {
+      curriculumTypes: [],
+      schoolNumber: '',
+      contactName: '',
+      contactPhone: '',
+      password: '******',
+      ...data,
+    }
+  })
+const user = ref({
   id: '',
   name: '',
   role: 'school',
@@ -21,18 +41,33 @@ const user = ref<User & { password: string }>({
   schoolNumber: '',
   contactName: '',
   contactPhone: '',
-  curriculumTypes: [],
+  curriculumTypes: [] as ('GS' | 'SEKI' | 'SEKII')[],
 })
 
+const error = ref('')
 const loading = ref(false)
-async function createUser() {
+
+async function createUpdateUser(event) {
+  if (!(await event).valid) return
+
+  error.value = ''
   loading.value = true
-  const id = await registerUser(user.value.email, user.value.password)
-  await addDoc(userCollection, {
-    id: id!,
-    ...withoutFields(user.value, 'id'),
-  })
-  router.push(`/user`)
+  try {
+    if (formMode == 'create' && 'password' in user?.value!) {
+      const id = await registerUser(user.value.email, user?.value.password)
+      await addDoc(userCollection, {
+        ...withoutFields(user.value, 'id', 'password'),
+        id: id!,
+      })
+    } else {
+      await updateDoc(userDocRef!, withoutFields(user?.value!, 'id', 'password'))
+    }
+    router.push(`/user`)
+  } catch (e) {
+    console.log(e)
+    if (e.code === 'auth/email-already-in-use') error.value = 'This email is already in use.'
+    else error.value = 'An unknown error occurred.'
+  }
   loading.value = false
 }
 
@@ -48,54 +83,71 @@ async function registerUser(email: string, password: string) {
 <template>
   <AppLayoutVue>
     <h2>
-      <RouterLink class="text-decoration-none h1 p-2 m-n2" to="/user">‹</RouterLink>
-      Create
-      <span class="text-secondary fw-bold">User</span>
+      <Backbutton to="/user" />
+      {{ formMode == 'create' ? 'Create' : 'Update' }} User
     </h2>
-    <form @submit.prevent="createUser">
-      <div class="mb-3">
-        <label class="form-label">Name</label>
-        <input class="form-control" type="text" v-model="user.name" />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input class="form-control" type="text" v-model="user.email" />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input class="form-control" minlength="6" type="text" v-model="user.password" />
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Role</label>
-        <select class="form-select" v-model="user.role">
-          <option value="school">School</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-      <template v-if="user.role == 'school'">
-        <div class="mb-3">
-          <label class="form-label">School Number</label>
-          <input class="form-control" type="text" v-model="user.schoolNumber" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Contact Name</label>
-          <input class="form-control" type="text" v-model="user.contactName" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Contact Phone</label>
-          <input class="form-control" type="text" v-model="user.contactPhone" />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Curriculum Types</label>
-          <select class="form-select" multiple v-model="user.curriculumTypes">
-            <option value="GS">Grundschule</option>
-            <option value="SEKI">Sekundarstufe I</option>
-            <option value="SEKII">Sekundarstufe II</option>
-          </select>
-        </div>
-      </template>
-      <LoadingSpinner v-if="loading" />
-      <button v-else class="btn btn-primary">Create User</button>
-    </form>
+    <v-alert color="error" class="mb-2" v-if="error" :text="error"></v-alert>
+    <LoadingSpinner v-if="!user" />
+    <v-form v-else @submit.prevent="createUpdateUser">
+      <v-row>
+        <v-text-field
+          :rules="[(v) => !!v || 'Please enter a Name.']"
+          v-model="user.name"
+          label="Name"
+          class="v-col-12 pb-0"
+        ></v-text-field>
+        <v-text-field
+          :rules="[(v) => formMode != 'create' || !!v || 'Please enter an Email.']"
+          v-model="user.email"
+          label="Email"
+          :disabled="formMode == 'edit'"
+          type="email"
+          class="v-col-6 py-0"
+        ></v-text-field>
+        <v-text-field
+          :rules="[(v) => formMode != 'create' || !!v || 'Please enter a Password.']"
+          v-model="(user as any).password"
+          :disabled="formMode == 'edit'"
+          label="Password"
+          class="v-col-6 py-0"
+        ></v-text-field>
+        <v-select v-model="user.role" label="Role" :items="['school', 'admin']" class="v-col-12"> </v-select>
+        <template v-if="user.role == 'school'">
+          <v-text-field
+            :rules="[(v) => !!v || 'Please enter a School Number.']"
+            v-model="user.schoolNumber"
+            label="School Number"
+            class="v-col-6 py-0"
+          ></v-text-field>
+          <v-text-field
+            :rules="[(v) => !!v || 'Please enter a Contact Name.']"
+            v-model="user.contactName"
+            label="Contact Name"
+            class="v-col-6 py-0"
+          ></v-text-field>
+          <v-text-field
+            :rules="[(v) => !!v || 'Please enter a Contact Phone.']"
+            v-model="user.contactPhone"
+            label="Contact Phone"
+            type="tel"
+            class="v-col-6 py-0"
+          ></v-text-field>
+          <v-select
+            chips
+            :rules="[(v) => v.length > 0 || 'Please select a Curriculum Type.']"
+            v-model="user.curriculumTypes"
+            label="Curriculum Types"
+            multiple
+            :items="['GS', 'SEKI', 'SEKII']"
+            class="v-col-6 py-0"
+          >
+          </v-select>
+        </template>
+      </v-row>
+
+      <v-btn :loading="loading" color="primary" type="submit" class="mt-4">
+        {{ formMode == 'create' ? 'Create' : 'Update' }} User
+      </v-btn>
+    </v-form>
   </AppLayoutVue>
 </template>

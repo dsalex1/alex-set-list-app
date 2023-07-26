@@ -6,10 +6,11 @@ import type { RouterLink } from 'vue-router'
 import { useCollection } from 'vuefire'
 import { User } from '@/types'
 import { type Query } from '@firebase/firestore'
+import { VDataTableVirtual } from 'vuetify/labs/VDataTable'
 
 const schools = useCollection(query(userCollection, where('role', '==', 'school')) as Query<User & { role: 'school' }>)
 const admins = useCollection(query(userCollection, where('role', '==', 'admin')) as Query<User & { role: 'admin' }>)
-
+const console = window.console
 async function deleteUser(uid: string) {
   if (!confirm('Are you sure you want to delete this user?')) return
   await deleteDoc(doc(userCollection, uid))
@@ -23,55 +24,52 @@ async function deleteUser(uid: string) {
 </script>
 <template>
   <AppLayout>
-    <h2 class="clearfix">
-      <span class="text-secondary fw-bold">Schools</span>
-      <RouterLink class="btn btn-primary float-end mb-2" :to="`/user/create`">+ Create User</RouterLink>
+    <h2 class="mb-2 d-flex align-end">
+      <div class="text-h5 flex-grow-1">Schools</div>
+      <RouterLink class="" to="/user/create">
+        <v-btn prepend-icon="fas fa-plus" color="primary">Create User</v-btn>
+      </RouterLink>
     </h2>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">School Name</th>
-          <th scope="col">School Number</th>
-          <th scope="col">School Email</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="school in schools" :key="school.id">
-          <td>{{ school.name }}</td>
-          <td>{{ school.schoolNumber }}</td>
-          <td>{{ school.email }}</td>
-          <td class="text-end">
-            <RouterLink :to="`/User/${school.id}/edit`" class="py-1 my-n1 me-2 btn btn-primary">Edit</RouterLink>
-            <button @click.stop="deleteUser(school.id)" class="py-1 my-n1 btn btn-danger">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-if="schools.length == 0" class="alert alert-info">No schools found.</div>
-    <hr />
-    <h2>
-      <span class="text-secondary fw-bold">Admins</span>
-    </h2>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">School Name</th>
-          <th scope="col">School Email</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="admin in admins" :key="admin.id">
-          <td>{{ admin.name }}</td>
-          <td>{{ admin.email }}</td>
-          <td class="text-end">
-            <RouterLink :to="`/User/${admin.id}/edit`" class="py-1 my-n1 me-2 btn btn-primary">Edit</RouterLink>
-            <button @click.stop="deleteUser(admin.id)" class="py-1 my-n1 btn btn-danger">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <v-data-table-virtual
+      :headers="[
+        { title: 'School Name', key: 'name' },
+        { title: 'School Number', key: 'schoolNumber' },
+        { title: 'School Email', key: 'email' },
+        { title: '', align: 'end', key: 'actions' },
+      ]"
+      :items="schools"
+      class="elevation-1"
+      maxheight="400"
+      item-value="name"
+    >
+      <template v-slot:item.actions="{ item: { raw } }">
+        <RouterLink :to="`/User/${raw.id}/edit`" class="me-2">
+          <v-btn prepend-icon="fas fa-pen" color="primary">Edit</v-btn>
+        </RouterLink>
+        <v-btn @click.stop="deleteUser(raw.id)" prepend-icon="fas fa-trash" color="error">Delete</v-btn>
+      </template>
+    </v-data-table-virtual>
+
+    <h2 class="text-h5 mb-2 mt-4">Admins</h2>
+
+    <v-data-table-virtual
+      :headers="[
+        { title: 'School Name', key: 'name' },
+        { title: 'School Email', key: 'email' },
+        { title: '', align: 'end', key: 'actions' },
+      ]"
+      :items="admins"
+      class="elevation-1"
+      maxheight="400"
+      item-value="name"
+    >
+      <template v-slot:item.actions="{ item: { raw } }">
+        <RouterLink :to="`/User/${raw.id}/edit`" class="me-2">
+          <v-btn prepend-icon="fas fa-pen" color="primary">Edit</v-btn>
+        </RouterLink>
+        <v-btn @click.stop="deleteUser(raw.id)" prepend-icon="fas fa-trash" color="error">Delete</v-btn>
+      </template>
+    </v-data-table-virtual>
     <div v-if="admins.length == 0" class="alert alert-info">No admins found.</div>
   </AppLayout>
 </template>

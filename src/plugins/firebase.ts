@@ -34,11 +34,12 @@ export const userCollection = typedCollection<User>(db, 'users')
 export const curriculumCollection = typedCollection<Curriculum>(db, 'curriculums')
 export const moduleCollection = typedCollection<Module>(db, 'modules')
 
+type FilteredKeys<T, U> = { [P in keyof T]: P extends U ? never : P }[keyof T]
 export const withoutFields = <
   T extends Record<string, unknown>,
   Keys extends string[],
   Return = {
-    [Key in keyof T]: Key extends Keys ? never : T[Key]
+    [Key in FilteredKeys<T, Keys[number]>]: T[Key]
   }
 >(
   obj: T,

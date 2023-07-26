@@ -7,22 +7,19 @@ const APP_SHORT_NAME = import.meta.env.VITE_APP_SHORT_NAME
 const auth = useAuth()
 </script>
 <template>
-  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="@/assets/logo-128.png" alt="" width="32" height="32" class="d-inline-block align-text-top" />
-        {{ APP_SHORT_NAME }}
-      </a>
-      <ul class="navbar-nav me-auto">
-        <RouterLink class="nav-item nav-link active" to="/home">Home</RouterLink>
-        <RouterLink class="nav-item nav-link active" to="/user">Users</RouterLink>
-      </ul>
-      <div class="d-flex align-items-center">
-        <span class="text-light me-2">{{ auth.user?.name }}</span>
-        <button class="btn btn-outline-light" @click="auth.logout">Logout</button>
-      </div>
-    </div>
-  </nav>
+  <v-app>
+    <v-toolbar color="primary" dark class="sticky-top">
+      <img src="@/assets/logo-128.png" width="40" height="40" class="mx-3" />
 
-  <div class="container pt-3"><slot></slot></div>
+      <RouterLink to="/home"><v-btn prepend-icon="fas fa-home" color="primary" variant="flat">Home</v-btn></RouterLink>
+      <RouterLink to="/user"><v-btn prepend-icon="fas fa-user" color="primary" variant="flat">Users</v-btn></RouterLink>
+
+      <v-spacer></v-spacer>
+
+      <span class="me-3">{{ auth.user?.name }}</span>
+      <v-btn prepend-icon="fas fa-sign-out" color="white" variant="outlined" @click="auth.logout">Logout</v-btn>
+    </v-toolbar>
+
+    <v-container><slot></slot></v-container>
+  </v-app>
 </template>

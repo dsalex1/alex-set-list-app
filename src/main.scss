@@ -1,8 +1,3 @@
-$body-bg: #f7f7f7;
-$card-bg: #fff;
-$primary: #011e4a;
-$secondary: #46525e;
-
-$enable-negative-margins: true;
- 
-@import "~bootstrap/scss/bootstrap.scss"
+.v-btn .v-icon {
+    --v-icon-size-multiplier: 0.785 !important;
+}

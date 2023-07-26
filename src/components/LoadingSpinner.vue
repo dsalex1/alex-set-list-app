@@ -1,5 +1,3 @@
 <template>
-  <div class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
+  <v-progress-circular indeterminate color="primary"></v-progress-circular>
 </template>
