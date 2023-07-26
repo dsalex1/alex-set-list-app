@@ -31,8 +31,8 @@ export const analytics = getAnalytics(app)
 const typedCollection = <T>(db: Firestore, col: string) => collection(db, col) as CollectionReference<T>
 
 export const userCollection = typedCollection<User>(db, 'users')
-export const CurriculumCollection = typedCollection<Curriculum>(db, 'curriculums')
-export const ModuleCollection = typedCollection<Module>(db, 'modules')
+export const curriculumCollection = typedCollection<Curriculum>(db, 'curriculums')
+export const moduleCollection = typedCollection<Module>(db, 'modules')
 
 export const withoutFields = <
   T extends Record<string, unknown>,

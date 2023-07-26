@@ -14,9 +14,8 @@ const auth = useAuth()
         {{ APP_SHORT_NAME }}
       </a>
       <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <RouterLink class="nav-link active" to="/home">Home</RouterLink>
-        </li>
+        <RouterLink class="nav-item nav-link active" to="/home">Home</RouterLink>
+        <RouterLink class="nav-item nav-link active" to="/user">Users</RouterLink>
       </ul>
       <div class="d-flex align-items-center">
         <span class="text-light me-2">{{ auth.user?.name }}</span>
