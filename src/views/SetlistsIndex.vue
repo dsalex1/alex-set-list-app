@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
 import { setlistCollection } from '@/plugins/firebase'
-import { useAuth } from '@/stores/auth'
 import { useCollection } from 'vuefire'
-
-const auth = useAuth()
 
 const setlists = useCollection(setlistCollection)
 </script>

@@ -3,8 +3,6 @@ import { HOME_ROUTE } from '@/router'
 import { useAuth } from '@/stores/auth'
 import { RouterLink } from 'vue-router'
 
-const APP_SHORT_NAME = import.meta.env.VITE_APP_SHORT_NAME
-
 const auth = useAuth()
 </script>
 <template>
