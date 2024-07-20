@@ -1,24 +1,24 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { auth, userCollection, type User } from '@/plugins/firebase'
+import { auth, /*userCollection*/} from '@/plugins/firebase'
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import type { User as FirebaseUser } from 'firebase/auth'
-import { doc, getDoc } from 'firebase/firestore'
+//import { doc, getDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
 
 export const useAuth = defineStore('auth', () => {
-  const user = ref<(FirebaseUser & Omit<Partial<User>, 'email'>) | null | undefined>(undefined)
+  const user = ref<(FirebaseUser /*& Omit<Partial<User>, 'email'>*/) | null | undefined>(undefined)
 
   onAuthStateChanged(auth, async (u) => {
     if (!u) {
       user.value = null
       return
     }
-    const userDoc = await getDoc(doc(userCollection, u.uid))
+    //const userDoc = await getDoc(doc(userCollection, u.uid))
     user.value = {
       ...u,
-      id: u.uid,
-      ...userDoc.data(),
+      //id: u.uid,
+      //...userDoc.data(),
     }
   })
 

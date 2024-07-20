@@ -9,14 +9,12 @@ const auth = useAuth()
 <template>
   <v-app>
     <v-toolbar color="primary" dark class="sticky-top">
-      <img src="@/assets/logo-128.png" width="40" height="40" class="mx-3" />
+      
 
-      <RouterLink to="/home"><v-btn prepend-icon="fas fa-home" color="primary" variant="flat">Home</v-btn></RouterLink>
-      <RouterLink to="/user"><v-btn prepend-icon="fas fa-user" color="primary" variant="flat">Users</v-btn></RouterLink>
-
+      <RouterLink to="/home"><img style="filter: invert()" src="@/assets/logo.svg" width="40" height="40" class="mx-3 mt-2" /> {{ APP_SHORT_NAME }}</RouterLink>
       <v-spacer></v-spacer>
 
-      <span class="me-3">{{ auth.user?.name }}</span>
+      <span class="me-3">{{ auth.user?.email }}</span>
       <v-btn prepend-icon="fas fa-sign-out" color="white" variant="outlined" @click="auth.logout">Logout</v-btn>
     </v-toolbar>
 

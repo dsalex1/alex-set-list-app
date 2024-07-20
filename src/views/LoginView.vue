@@ -5,6 +5,8 @@ import { useAuth } from '@/stores/auth'
 import { sendPasswordResetEmail } from '@firebase/auth'
 import { reactive, ref } from 'vue'
 
+const ENV = import.meta.env
+
 const authStore = useAuth()
 const error = ref('')
 const loading = ref(false)
@@ -24,7 +26,7 @@ async function forgetPassword() {
     error.value = 'No user found with this email.'
   }
 }
-const login = async (event) => {
+const login = async (event:any) => {
   if (!(await event).valid) return
   loading.value = true
   error.value = ''
@@ -43,11 +45,12 @@ const login = async (event) => {
     <LoadingSpinner />
   </div>
   <v-container v-else class="d-flex flex-column align-center">
-    <v-img class="my-12 border rounded" width="128" height="128" src="@/assets/logo-128.png"></v-img>
-    <v-sheet width="400" class="mx-auto">
+    <v-img class="mt-12 border rounded" width="128" height="128" src="@/assets/logo.svg"></v-img>
+    <h2 class="mt-2 mb-10">{{ENV.VITE_APP_NAME }}</h2> 
+    <v-sheet max-width="400" width="400" class="mx-auto">
       <h1 class="text-h4 mb-2">Login</h1>
       <v-alert color="success mb-2" v-if="success" :text="success"></v-alert>
-      <v-form validate-on="submit" @submit.prevent="login">
+      <v-form validate-on="submit" @submit.prevent="login" width="100%">
         <v-text-field
           :rules="[(v) => !!v || 'Please enter your password.']"
           v-model="user.email"

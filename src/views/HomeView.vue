@@ -7,7 +7,7 @@ const auth = useAuth()
 
 <template>
   <AppLayout>
-    <h2>Hello {{ auth.user?.name }}</h2>
+    <h2>Hello {{ auth.user?.email }}</h2>
     <h4>You are logged in!</h4>
   </AppLayout>
 </template>
