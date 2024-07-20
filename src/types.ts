@@ -5,7 +5,7 @@
 }*/
 
 export type Setlist = {
-  id: number
+  id: string
   name?: string
   songs: Song['filename'][]
 }
@@ -13,9 +13,8 @@ export type Setlist = {
 export type Song = {
   filename: string
   name?: string
-  key_signature?: `${'C'|'D'|'E'|'F'|'G'|'A'|'B'}${'#'|'b'|''}-${'minor'|'major'}`
+  key_signature?: `${'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'}${'#' | 'b' | ''}-${'minor' | 'major'}`
   speed?: number
   duration?: number
-  note?:string
+  note?: string
 }
-

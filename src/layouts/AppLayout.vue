@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { HOME_ROUTE } from '@/router'
 import { useAuth } from '@/stores/auth'
 import { RouterLink } from 'vue-router'
 
@@ -9,9 +10,11 @@ const auth = useAuth()
 <template>
   <v-app>
     <v-toolbar color="primary" dark class="sticky-top">
-      
-
-      <RouterLink to="/home"><img style="filter: invert()" src="@/assets/logo.svg" width="40" height="40" class="mx-3 mt-2" /> {{ APP_SHORT_NAME }}</RouterLink>
+      <RouterLink :to="HOME_ROUTE">
+        <div class="d-flex flex-column align-center">
+          <img style="filter: invert()" src="@/assets/logo.svg" width="40" height="40" class="mx-3" />
+        </div>
+      </RouterLink>
       <v-spacer></v-spacer>
 
       <span class="me-3">{{ auth.user?.email }}</span>

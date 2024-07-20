@@ -1,8 +1,15 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { initializeFirestore, persistentLocalCache } from 'firebase/firestore'
+import {
+  collection,
+  CollectionReference,
+  Firestore,
+  initializeFirestore,
+  persistentLocalCache,
+} from 'firebase/firestore'
 import { getPerformance } from 'firebase/performance'
 import { getAnalytics } from 'firebase/analytics'
+import { Setlist } from '@/types'
 
 const env = import.meta.env
 
@@ -26,11 +33,12 @@ export const db = initializeFirestore(app, { localCache: persistentLocalCache({}
 export const perf = getPerformance(app)
 export const analytics = getAnalytics(app)
 
-// const typedCollection = <T>(db: Firestore, col: string) => collection(db, col) as CollectionReference<T>
+const typedCollection = <T>(db: Firestore, col: string) => collection(db, col) as CollectionReference<T>
 
-//export const userCollection = typedCollection<User>(db, 'users')
+export const setlistCollection = typedCollection<Setlist>(db, 'setlist')
 
 type FilteredKeys<T, U> = { [P in keyof T]: P extends U ? never : P }[keyof T]
+
 export const withoutFields = <
   T extends Record<string, unknown>,
   Keys extends string[],

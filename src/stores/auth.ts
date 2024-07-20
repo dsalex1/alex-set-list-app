@@ -1,13 +1,14 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { auth, /*userCollection*/} from '@/plugins/firebase'
+import { auth /*userCollection*/ } from '@/plugins/firebase'
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import type { User as FirebaseUser } from 'firebase/auth'
 //import { doc, getDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
+import { HOME_ROUTE, LOGIN_ROUTE } from '@/router'
 
 export const useAuth = defineStore('auth', () => {
-  const user = ref<(FirebaseUser /*& Omit<Partial<User>, 'email'>*/) | null | undefined>(undefined)
+  const user = ref<FirebaseUser /*& Omit<Partial<User>, 'email'>*/ | null | undefined>(undefined)
 
   onAuthStateChanged(auth, async (u) => {
     if (!u) {
@@ -37,9 +38,9 @@ export const useAuth = defineStore('auth', () => {
     (user) => {
       if (user === undefined) return
       if (user) {
-        if (router.currentRoute.value.path === '/login') router.push('/home')
+        if (router.currentRoute.value.path === LOGIN_ROUTE) router.push(HOME_ROUTE)
       } else {
-        router.push('/login')
+        router.push(LOGIN_ROUTE)
       }
     },
     { immediate: true }
