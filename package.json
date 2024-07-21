@@ -12,6 +12,7 @@
     "@vueuse/core": "^10.11.0",
     "dayjs": "^1.11.12",
     "firebase": "^10.12.4",
+    "gapi-script": "^1.2.0",
     "idb-keyval": "^6.2.1",
     "pinia": "^2.1.7",
     "vite-plugin-pwa": "^0.20.0",

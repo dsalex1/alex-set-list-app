@@ -1,10 +1,10 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 export const HOME_ROUTE = '/setlist'
 export const LOGIN_ROUTE = '/login'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.VITE_BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes: [
     {
       path: HOME_ROUTE,

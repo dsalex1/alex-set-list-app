@@ -34,3 +34,17 @@ export const flatTree = <Tree extends { children?: Tree[] }>(tree: Tree[]): Pret
     return acc
   }, [] as Omit<Tree, 'children'>[])
 }
+
+export function sortTree<Tree extends { children?: Tree[] }>(
+  tree: Tree[],
+  sortFn: (a: Tree, b: Tree) => number
+): Tree[] {
+  tree.sort((a, b) => {
+    if (a.children && !b.children) return -1
+    if (!a.children && b.children) return 1
+    return sortFn(a, b)
+  })
+  tree.forEach((entry) => entry.children && sortTree(entry.children, sortFn))
+
+  return tree
+}
