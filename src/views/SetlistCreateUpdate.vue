@@ -5,19 +5,11 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import { useSheetBaseDirectory } from '@/plugins/sheetBaseDirectory'
 import { HOME_ROUTE } from '@/router'
 
-import {
-  deleteObject,
-  getDownloadURL,
-  getMetadata,
-  getStorage,
-  ref as firebaseRef,
-  uploadBytes,
-  type StorageReference,
-} from 'firebase/storage'
+import { getStorage, ref as firebaseRef, uploadBytes } from 'firebase/storage'
 
 import { setlistCollection, songCollection, withoutFields } from '@/plugins/firebase'
 import { Setlist } from '@/types'
-import { addDoc, deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { ref, watch } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
