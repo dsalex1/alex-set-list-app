@@ -1,20 +1,39 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import VuePdfEmbed from 'vue-pdf-embed'
 import { useSwipe, useWindowSize } from '@vueuse/core'
 import { VBtn } from 'vuetify/components'
+import { Song } from '@/types'
+import { useSheetBaseDirectory } from '@/plugins/sheetBaseDirectory'
+import { flatTree, mapTree } from '@/helpers'
+import { getDownloadURL, ref as firebaseRef, getStorage } from 'firebase/storage'
 
 const props = defineProps<{
-  files: { name: string; handle: FileSystemFileHandle }[]
+  songs: Song[]
 }>()
+
+const { pdfTree } = useSheetBaseDirectory()
+
+const flattendPdfTree = computed(() =>
+  flatTree(mapTree(pdfTree.value, (f) => ({ ...f, handle: f.handle as FileSystemFileHandle })))
+)
+
+async function resolveFileUrl(song: Song) {
+  if (song.pdfStorageRef) return await getDownloadURL(firebaseRef(getStorage(), song.pdfStorageRef))
+  if (song.filename)
+    return URL.createObjectURL(await flattendPdfTree.value.find((f) => f.name === song.filename)!.handle.getFile())
+  return ''
+}
 
 const fileContents = ref<{ dataUrl: string; name: string; pageCount?: number }[]>([])
 
 watchEffect(async () => {
-  fileContents.value = (await Promise.all(props.files.map((f) => f.handle.getFile()))).map((f) => ({
-    name: f.name,
-    dataUrl: URL.createObjectURL(f),
-  }))
+  fileContents.value = await Promise.all(
+    props.songs.map(async (song) => ({
+      name: song.name || 'untitled',
+      dataUrl: await resolveFileUrl(song),
+    }))
+  )
 })
 
 const { height } = useWindowSize()

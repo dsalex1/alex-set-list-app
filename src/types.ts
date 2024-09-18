@@ -5,13 +5,15 @@
 }*/
 
 export type Setlist = {
-  id: string
+  id?: string
   name?: string
   songs: Song['filename'][]
 }
 
 export type Song = {
+  id?: string
   filename: string
+  pdfStorageRef?: string
   name?: string
   key_signature?: `${'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'}${'#' | 'b' | ''}-${'minor' | 'major'}`
   speed?: number

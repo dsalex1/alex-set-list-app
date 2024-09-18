@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
-import { setlistCollection } from '@/plugins/firebase'
+import { setlistCollection, songCollection } from '@/plugins/firebase'
 import { useCollection } from 'vuefire'
 
 const setlists = useCollection(setlistCollection)
+const songs = useCollection(songCollection)
+
+function formatSongName(song: string) {
+  return song.replace(/.pdf$/, '').length > 16
+    ? song.replace(/.pdf$/, '').substring(0, 13) + '...'
+    : song.replace(/.pdf$/, '')
+}
 </script>
 
 <template>
@@ -43,9 +50,7 @@ const setlists = useCollection(setlistCollection)
             </VCardSubtitle>
             <v-card-text>
               <v-chip size="small" v-for="song in setlist.songs" :key="song">{{
-                song.replace(/.pdf$/, '').length > 16
-                  ? song.replace(/.pdf$/, '').substring(0, 13) + '...'
-                  : song.replace(/.pdf$/, '')
+                formatSongName(songs.find((s) => s.id == song)?.filename || '')
               }}</v-chip>
             </v-card-text>
           </v-card>

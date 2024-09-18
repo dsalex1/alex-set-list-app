@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore'
 import { getPerformance } from 'firebase/performance'
 import { getAnalytics } from 'firebase/analytics'
-import { Setlist } from '@/types'
+import { Setlist, Song } from '@/types'
 
 const env = import.meta.env
 
@@ -36,6 +36,7 @@ export const analytics = getAnalytics(app)
 const typedCollection = <T>(db: Firestore, col: string) => collection(db, col) as CollectionReference<T>
 
 export const setlistCollection = typedCollection<Setlist>(db, 'setlist')
+export const songCollection = typedCollection<Song>(db, 'songs')
 
 type FilteredKeys<T, U> = { [P in keyof T]: P extends U ? never : P }[keyof T]
 
