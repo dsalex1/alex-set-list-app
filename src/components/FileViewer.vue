@@ -118,16 +118,18 @@ watchEffect(() => {
       "
       ref="swipeTarget"
     >
-      <div @click="prev()" style="position: absolute; top: 0; left: 0; width: 50%; height: 100%"></div>
-      <div @click="next()" style="position: absolute; top: 0; right: 0; width: 50%; height: 100%"></div>
-      <vue-pdf-embed
-        v-for="(file, i) in fileContents"
-        v-show="i === currentFileIndex"
-        :height="height - 30"
-        :page="currentFilePage"
-        @loaded="({ numPages }) => (file.pageCount = numPages)"
-        :source="file.dataUrl"
-      />
+      <div @click="prev()" style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; z-index: 10"></div>
+      <div @click="next()" style="position: absolute; top: 0; right: 0; width: 50%; height: 100%; z-index: 10"></div>
+      <div v-for="(file, i) in fileContents" :style="{ opacity: i === currentFileIndex ? 1 : 0 }" style="width: 0px">
+        <vue-pdf-embed
+          v-for="pageIndex in file.pageCount || 1"
+          v-show="pageIndex === currentFilePage"
+          :height="height - 30"
+          :page="pageIndex"
+          @loaded="({ numPages }) => (file.pageCount = numPages)"
+          :source="file.dataUrl"
+        />
+      </div>
     </div>
   </div>
 </template>
