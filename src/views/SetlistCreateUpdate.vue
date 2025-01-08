@@ -40,6 +40,24 @@ const setlist = ref<Omit<Setlist, 'songs'>>({
 
 const currentSongs = ref<string[]>([])
 
+function arbuf2hex(buffer: ArrayBuffer) {
+  var hexCodes = []
+  var view = new DataView(buffer)
+  for (var i = 0; i < view.byteLength; i += 4) {
+    // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
+    var value = view.getUint32(i)
+    // toString(16) will give the hex representation of the number without padding
+    var stringValue = value.toString(16)
+    // We use concatenation and slice for padding
+    var padding = '00000000'
+    var paddedValue = (padding + stringValue).slice(-padding.length)
+    hexCodes.push(paddedValue)
+  }
+
+  // Join all the hex strings into one
+  return hexCodes.join('')
+}
+
 const error = ref('')
 const loading = ref(false)
 async function createSetlist() {
@@ -54,13 +72,22 @@ async function createSetlist() {
           await addDoc(songCollection, { filename: filename, name: filename })
         const songDoc = songsDocs.value.find((doc) => doc.filename == filename)!
 
-        //upload file to firebase storage and save reference in the song doc
-        if (!songDoc.pdfStorageRef) {
-          const file = await uploadFile(
-            flatTree(pdfTree.value).find((f) => f.name == filename)!.handle as FileSystemFileHandle,
-            songDoc.id!
+        const fileHandle = flatTree(pdfTree.value).find((f) => f.name == filename)?.handle as FileSystemFileHandle
+        const fileSha = arbuf2hex(
+          await window.crypto.subtle.digest(
+            'SHA-256',
+            new Uint8Array(await (await fileHandle?.getFile())?.arrayBuffer())
           )
-          await updateDoc(doc(songCollection, songDoc.id!), { filename: filename, pdfStorageRef: file.fullPath })
+        )
+        //upload file to firebase storage and save reference in the song doc
+        if (fileHandle && (!songDoc.pdfStorageRef || songDoc.pdfStorageSHA != fileSha)) {
+          console.log('Uploading file', filename)
+          const file = await uploadFile(fileHandle)
+          await updateDoc(doc(songCollection, songDoc.id!), {
+            filename: filename,
+            pdfStorageRef: file.fullPath,
+            pdfStorageSHA: fileSha,
+          })
         }
       })
     )
@@ -98,9 +125,9 @@ async function deleteSetlist() {
 
 const { pdfTree } = useSheetBaseDirectory()
 
-async function uploadFile(file: FileSystemFileHandle, folder: string) {
+async function uploadFile(file: FileSystemFileHandle) {
   const storage = getStorage()
-  const fileRef = firebaseRef(storage, folder + '/' + file.name)
+  const fileRef = firebaseRef(storage, file.name) // folder + '/' +
   await uploadBytes(fileRef, await file.getFile(), {
     customMetadata: {
       originalFileName: file.name,

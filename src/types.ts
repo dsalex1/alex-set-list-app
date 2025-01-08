@@ -13,6 +13,7 @@ export type Setlist = {
 export type Song = {
   id?: string
   filename: string
+  pdfStorageSHA?: string
   pdfStorageRef?: string
   name?: string
   key_signature?: `${'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'}${'#' | 'b' | ''}-${'minor' | 'major'}`

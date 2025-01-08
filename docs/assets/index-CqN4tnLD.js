@@ -3,18 +3,18 @@ const __vite__mapDeps = (
   m = __vite__mapDeps,
   d = m.f ||
     (m.f = [
-      'assets/SetlistsIndex-CO_nWPJI.js',
-      'assets/AppLayout.vue_vue_type_script_setup_true_lang-B2aB8Sgr.js',
-      'assets/auth-CbtkUdst.js',
-      'assets/SetlistCreateUpdate-D57DwXV-.js',
-      'assets/sheetBaseDirectory-BnjYEQ72.js',
-      'assets/helpers-Hh-SjjSI.js',
+      'assets/SetlistsIndex-BRd3_E6Z.js',
+      'assets/AppLayout.vue_vue_type_script_setup_true_lang-oxBXjM_Y.js',
+      'assets/auth-CN2OG6Db.js',
+      'assets/SetlistCreateUpdate-DC8blgn2.js',
+      'assets/sheetBaseDirectory-nsSIru8u.js',
+      'assets/helpers-DU00XPo1.js',
       'assets/plugin-vue_export-helper-DlAUqK2U.js',
-      'assets/SetlistCreateUpdate-BwedoV8-.css',
-      'assets/SetlistRead-6iFH7K3d.js',
+      'assets/SetlistCreateUpdate-BT6RzEEO.css',
+      'assets/SetlistRead-CwV6Lmqw.js',
       'assets/SetlistRead-Cmvf00kW.css',
-      'assets/Login-CAiAw9gx.js',
-      'assets/Settings-DZPSPFku.js',
+      'assets/Login-1NAmQK7z.js',
+      'assets/Settings-ztzgAJud.js',
       'assets/Settings-UBz24cDf.css',
     ])
 ) => i.map((i) => d[i])
@@ -61339,23 +61339,23 @@ const Cte = Of({
   Rte = Ete({
     history: Zee('/ASLA/'),
     routes: [
-      { path: Pte, component: () => Ma(() => import('./SetlistsIndex-CO_nWPJI.js'), __vite__mapDeps([0, 1, 2])) },
+      { path: Pte, component: () => Ma(() => import('./SetlistsIndex-BRd3_E6Z.js'), __vite__mapDeps([0, 1, 2])) },
       {
         path: '/setlist/create',
-        component: () => Ma(() => import('./SetlistCreateUpdate-D57DwXV-.js'), __vite__mapDeps([3, 4, 5, 1, 2, 6, 7])),
+        component: () => Ma(() => import('./SetlistCreateUpdate-DC8blgn2.js'), __vite__mapDeps([3, 4, 5, 1, 2, 6, 7])),
       },
       {
         path: '/setlist/:id/edit',
-        component: () => Ma(() => import('./SetlistCreateUpdate-D57DwXV-.js'), __vite__mapDeps([3, 4, 5, 1, 2, 6, 7])),
+        component: () => Ma(() => import('./SetlistCreateUpdate-DC8blgn2.js'), __vite__mapDeps([3, 4, 5, 1, 2, 6, 7])),
       },
       {
         path: '/setlist/:id',
-        component: () => Ma(() => import('./SetlistRead-6iFH7K3d.js'), __vite__mapDeps([8, 4, 5, 6, 9])),
+        component: () => Ma(() => import('./SetlistRead-CwV6Lmqw.js'), __vite__mapDeps([8, 4, 5, 6, 9])),
       },
-      { path: bC, component: () => Ma(() => import('./Login-CAiAw9gx.js'), __vite__mapDeps([10, 2, 6])) },
+      { path: bC, component: () => Ma(() => import('./Login-1NAmQK7z.js'), __vite__mapDeps([10, 2, 6])) },
       {
         path: '/settings',
-        component: () => Ma(() => import('./Settings-DZPSPFku.js'), __vite__mapDeps([11, 4, 1, 2, 6, 12])),
+        component: () => Ma(() => import('./Settings-ztzgAJud.js'), __vite__mapDeps([11, 4, 1, 2, 6, 12])),
       },
       { path: '/', redirect: bC },
     ],
